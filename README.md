@@ -2,7 +2,7 @@
 * Utilizes Express as backend API
 
 ## Usage
-This application is designed to be used in conjunction with Cleanharbors intrasite. Utilizing injected code on 
+This server is designed to be used in conjunction with Cleanharbors intrasite and the frontend variant. Utilizing injected code on 
 the intrasite, post iframe DVIR data back to this server to be stored and or downloaded in compiled and 
 relevantly named file sets.
 
