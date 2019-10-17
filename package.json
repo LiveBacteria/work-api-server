@@ -1,0 +1,35 @@
+{
+  "name": "work-api-server",
+  "version": "2.0.0",
+  "description": "This server is designed to be used in conjunction with Cleanharbors intrasite and the frontend variant. Utilizing injected code on the intrasite, post iframe DVIR data back to this server to be stored and or downloaded in compiled and relevantly named file sets.",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiveBacteria/work-api-server.git"
+  },
+  "keywords": [
+    "server"
+  ],
+  "author": "Tyler Poore",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LiveBacteria/work-api-server/issues"
+  },
+  "homepage": "https://github.com/LiveBacteria/work-api-server#readme",
+  "dependencies": {
+    "@google-cloud/storage": "^3.5.0",
+    "adm-zip": "^0.4.13",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "download": "^7.1.0",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.6.1",
+    "nodemon": "^1.19.4",
+    "puppeteer": "^1.20.0",
+    "request": "^2.88.0"
+  }
+}
