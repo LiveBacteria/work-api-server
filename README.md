@@ -13,7 +13,8 @@ relevantly named file sets.
 
 ## Solutions
 * Utilise Heroku ephemeral storage for html to pdf / image --
-* Created and connected Google Firestore Cloud Storage √
+* Created and connected Google Firestore Cloud Storage --
+* Ability to run locally alongside electron frontend deployment ~
 
 ## Features
 * Mass-download DVIR
