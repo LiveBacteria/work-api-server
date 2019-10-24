@@ -4,7 +4,8 @@
   "description": "This server is designed to be used in conjunction with Cleanharbors intrasite and the frontend variant. Utilizing injected code on the intrasite, post iframe DVIR data back to this server to be stored and or downloaded in compiled and relevantly named file sets.",
   "main": "server/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "set NODE_ENV=test&& jasmine",
+    "start": "nodemon server/server.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,13 @@
     "express": "^4.17.1",
     "firebase-admin": "^8.6.1",
     "nodemon": "^1.19.4",
+    "pdf-text-extract": "^1.5.0",
+    "pdf2json": "^1.1.8",
     "puppeteer": "^1.20.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "tesseractocr": "^1.2.1"
+  },
+  "devDependencies": {
+    "jasmine": "^3.5.0"
   }
 }
