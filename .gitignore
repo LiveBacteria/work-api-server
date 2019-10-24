@@ -6,3 +6,6 @@ output/**/*.pdf
 
 output/**/*.html
 
+output/**/*.zip
+
+.env
