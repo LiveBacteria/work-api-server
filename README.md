@@ -25,8 +25,8 @@ Using `npm start` will start the server.
 **Please note that this server needs to be running before attempting to connect with the frontend.**
 
 ## Issues
-* Handling and storing data when deployed to Heroku √
-* Sending iframe content as POST data to server √
+* Handling and storing data when deployed to Heroku --
+* Sending iframe content as POST data to server --
 * Recieving and converting iframe content to be storable and readable on serverside √
 * Delay in cloud functionality leading to corrupted zip downloads --
 
@@ -38,12 +38,14 @@ Using `npm start` will start the server.
 
 ## Features
 * Compile and mass-download DVIR
-* Compile and mass-download APR reports
-* Weekly Duties solutions: DVIR, APR, ELD
+* Weekly Duties solutions: DVIR Tracking, Assigned Vehicle DVIR Tracking
 
 ## Future Features
+* Merge with [Frontend](https://github.com/LiveBacteria/cleanharbors-frontend)
+* Compile and mass-download APR reports
+* Compile and mass-download DLOG (Utlizing XSS via Chromium Extension on Telogis Domain)
 * Utilize either OCR for ELD pdf data conversion, or convert ELD pdf to readable standard csv / JSON / text String
-* ELD Log APR reconnaissance
+* Weekly Duties solutions: ELD<->APR Recon
 
 ## License 
 * Copyright Tyler Poore
