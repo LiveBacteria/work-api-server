@@ -1,6 +1,8 @@
 # Cleanharbors DVIR to PDF API server
 Utilizing node and express, this project serves as a backend handler to the frontend counterpart. In general, this project allows to accelerate the Transportation Compliance Coordinator workflow at clean harbors.
 
+You can follow this project and the Frontend development at [Trello](https://trello.com/b/D5xHfQeb/work-app-node).
+
 ## Usage
 This server is designed to be used in conjunction with Cleanharbors intrasite and the frontend project, [Cleanharbors Frontend](https://github.com/LiveBacteria/cleanharbors-frontend). Utilizing injected code on 
 the intrasite, post iframe DVIR data back to this server to be stored and or downloaded in compiled and 
