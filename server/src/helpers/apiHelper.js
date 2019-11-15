@@ -55,15 +55,62 @@ let htmlComplete = htmlHeadContent.concat(htmlBodyContent);
     return pdf;
 }
 
+async function savePdf(url, browser) {
+    const page = await browser.newPage();
+    await page.goto(url, {waitUntil: 'networkidle0', timeout: 0});
+    const pdf = await page.pdf({format: 'A4'});
+    return pdf;
+}
+
 module.exports = {
     createFileName(date, tripType, logNumber, type){
         let finalName = "dvir-";
         //finalName.concat((date.replace(/\//g, "-") + "." + type));
         date = date.replace(/\//g, "-");
         finalName = finalName.concat(`${date}-${tripType ? "pre" : "post"}-${logNumber}.${type}`);
-        console.log(finalName);
-        console.log("Current path is: " + `${path.resolve(__dirname, "../..")}/output/`);
+        //console.log(finalName);
+        //console.log("Current path is: " + `${path.resolve(__dirname, "../..")}/output/`);
         return finalName;
+    },
+    createFileNameURL(logNumber){
+        let finalName = "dvir-";
+        //date = date.replace(/\//g, "-");
+        finalName = finalName.concat(`${logNumber}.pdf`);
+        return finalName;
+    },
+    ensureDirExists(vehicleNumber, type){
+        dirPath = `${path.resolve(__dirname, "../..")}/output/${type}/${vehicleNumber}`;
+
+        try{
+            fs.mkdirSync(dirPath);
+        } catch{
+        }
+
+        if(fs.existsSync(dirPath)){
+            return vehicleNumber;
+        }else{
+            if(mkdirs(path.dirname(dirPath))){
+                fs.mkdirSync(dirPath);
+                return vehicleNumber;
+            }
+        }
+    },
+    ensureDirExistsURL(vehicleNumber){
+        dirPath = `${path.resolve(__dirname, "../..")}/output/pdf/${vehicleNumber}`;
+
+        try{
+            fs.mkdirSync(dirPath);
+        } catch{
+        }
+
+        if(fs.existsSync(dirPath)){
+            return vehicleNumber;
+        }else{
+            if(mkdirs(path.dirname(dirPath))){
+                fs.mkdirSync(dirPath);
+                return vehicleNumber;
+            }
+        }
     },
     deleteLocalCache(){
         fs.readdir(`${path.resolve(__dirname, "../..")}/output/tempHTML/`, (err, files) => {
@@ -158,5 +205,8 @@ module.exports = {
     },
     helpPrintPdf(htmlFile){
         return printPdf(htmlFile);
+    },
+    urlPDF(url, browser, vehicleNumber){
+        return savePdf(url, browser);
     }
 };

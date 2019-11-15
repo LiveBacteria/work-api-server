@@ -4,6 +4,8 @@ const http = require("http");
 const port = process.env.PORT || "3000";
 app.set("port", port);
 
+process.setMaxListeners(0);
+
 const server = http.createServer(app);
 
 server.listen(port);
