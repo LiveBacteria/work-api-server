@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+
+  "name": "Equipment Automation Script Injector",
+  "version": "0.1.0",
+  "description": "Intended to automate the equipment file update task. This extension is designed to inject code, html content, and styling into a given page.",
+
+  "content_scripts": [{
+    "css": ["src/styles.css"],
+    "js": ["src/content.js"],
+    "matches": ["http://winweb.cleanharbors.com/WorkTicket/*"]
+  }],
+
+  "web_accessible_resources": [
+    "html/*"
+  ]
+
+}

@@ -5,7 +5,8 @@
   "main": "server/server.js",
   "scripts": {
     "test": "set NODE_ENV=test&& jasmine",
-    "start": "nodemon server/server.js"
+    "start": "nodemon server/server.js",
+    "launch": "nodemon server/server.js"
   },
   "repository": {
     "type": "git",

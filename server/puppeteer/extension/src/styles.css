@@ -1,0 +1,15 @@
+body {
+    display: block;
+    background: darkslategray !important;
+    text-align: center;
+    vertical-align: center;
+}
+
+.container {
+    border-radius: 5px;
+    background: lightgray;
+}
+div {
+    margin: 5px;
+    padding: 2px;
+}

@@ -131,5 +131,8 @@ module.exports = {
     },
     download(req, res, next){
         apiHelper.groupZip(req.body.vehicleNumber, res);
+    },
+    equipmentAutomation(req, res, next){
+
     }
 };

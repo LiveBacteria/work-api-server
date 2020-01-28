@@ -15,6 +15,8 @@ router.post("/api/htmltopdf", cors(), apiController.htmltopdf);
 
 router.post("/api/url-to-pdf", cors(), apiController.urlPDF);
 
+router.post("/api/equipment_automation", cors(), apiController.equipmentAutomation);
+
 //router.post("/api/url-to-pdf", cors(), apiController.urlToPDF);
 
 router.get("/api/download/:vehicleId", apiController.download);

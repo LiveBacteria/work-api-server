@@ -59,6 +59,7 @@ async function savePdf(url, browser) {
     const page = await browser.newPage();
     await page.goto(url, {waitUntil: 'networkidle0', timeout: 0});
     const pdf = await page.pdf({format: 'A4'});
+    await page.close();
     return pdf;
 }
 
