@@ -5,6 +5,13 @@ const request = require('request');
 const puppeteer = require("puppeteer");
 const AdmZip = require('adm-zip');
 const download = require("download");
+const papa = require("papaparse");
+
+// console.log(papa.parse(`${path.resolve(__dirname, "./1.csv")}`))
+
+// const file = fs.createReadStream(`${path.resolve(__dirname, "./1.csv")}`);
+
+
 
 const PDFParser = require("pdf2json");
 let pdfParser = new PDFParser();
@@ -209,5 +216,8 @@ module.exports = {
     },
     urlPDF(url, browser, vehicleNumber){
         return savePdf(url, browser);
+    },
+    async hosPayrollRecon(req, res){
+
     }
 };

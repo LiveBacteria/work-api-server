@@ -136,21 +136,36 @@ module.exports = {
 
     },
     async getDataTest(req, res, next){
+        const credential  = {};
+        credential.user = "pooret1";
+        credential.password = "Kotegawayui11!!";
+
         const browser = await puppeteer.launch({headless: false});
         const url = "http://winweb.cleanharbors.com/Vehicle/VehicleTDSearch.aspx?SearchType=DVIR"
         const page = await browser.newPage();
         await page.goto(url, {waitUntil: 'networkidle0', timeout: 0});
+
+        if(await page.evaluate(() => {return document.body.innerHTML.toString().includes("Web Login")})){ //Checks to see if login is required, and if so completes a login
+            await page.type("#txtUserName", credential.user);
+            await page.type("#txtPassword", credential.password);
+            await page.click("#btnLogin");
+            await page.waitForSelector('#ddlCorretcedDVIR', {
+                visible: true,
+            });
+        }
+
         await page.type("#txtVhcleNo", "1031"); // sets the unit number to be equal to the current unit
+
         await page.evaluate(() => {
+            $('#ddlCorretcedDVIR').attr('disabled', false);
+            $("#ddlCorretcedDVIR").attr('selectedIndex', 2);
             document.querySelector("#ddlCondition").selectedIndex = 2; // selects `Requires Maintenance`
-            document.querySelector("#ddlCorretcedDVIR").selectedIndex = 2; // selects `Non-Corrected DVIRs`
             document.querySelector("#txtStartDate").value = "01/01/1980"; // sets the start date of the search to "01/01/1990"
         });
-        await page.select("#ddlCorretcedDVIR", "0");
+
         await page.click("#btnRetrieve"); // starts the search which reloads the page
-        // await page.waitForNavigation({
-        //     waitUntil: 'networkidle0',
-        // });
+
+
         try {
             await page.waitForSelector('#gridViewDVIRsearch > tbody .Row0', {
                 visible: true,
@@ -175,5 +190,11 @@ module.exports = {
             await page.close();
             res.send("Error!");
         }
+    },
+    async groupedPayrollReports(req, res, next){
+
+    },
+    async hosPayrollReconHandler(req, res, next){
+        await apiHelper.hosPayrollRecon(req, res);
     }
 };
