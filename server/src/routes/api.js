@@ -21,6 +21,8 @@ router.post("/api/equipment_automation", cors(), apiController.equipmentAutomati
 
 router.get("/api/download/:vehicleId", apiController.download);
 
+router.get("/api/testRoute", apiController.getDataTest);
+
 router.get("/api/*", apiController.index);
 
 module.exports = router;

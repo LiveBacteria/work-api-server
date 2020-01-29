@@ -134,5 +134,46 @@ module.exports = {
     },
     equipmentAutomation(req, res, next){
 
+    },
+    async getDataTest(req, res, next){
+        const browser = await puppeteer.launch({headless: false});
+        const url = "http://winweb.cleanharbors.com/Vehicle/VehicleTDSearch.aspx?SearchType=DVIR"
+        const page = await browser.newPage();
+        await page.goto(url, {waitUntil: 'networkidle0', timeout: 0});
+        await page.type("#txtVhcleNo", "1031"); // sets the unit number to be equal to the current unit
+        await page.evaluate(() => {
+            document.querySelector("#ddlCondition").selectedIndex = 2; // selects `Requires Maintenance`
+            document.querySelector("#ddlCorretcedDVIR").selectedIndex = 2; // selects `Non-Corrected DVIRs`
+            document.querySelector("#txtStartDate").value = "01/01/1980"; // sets the start date of the search to "01/01/1990"
+        });
+        await page.select("#ddlCorretcedDVIR", "0");
+        await page.click("#btnRetrieve"); // starts the search which reloads the page
+        // await page.waitForNavigation({
+        //     waitUntil: 'networkidle0',
+        // });
+        try {
+            await page.waitForSelector('#gridViewDVIRsearch > tbody .Row0', {
+                visible: true,
+            });
+            try{
+                await page.waitForSelector('#gridViewDVIRsearch > tbody .Row1', {
+                    visible: true,
+                });
+            }catch{
+
+            }
+            let data = await page.evaluate(() => {
+                return document.body.innerHTML;
+            });
+            //const pdf = await page.pdf({format: 'A4'});
+            //res.setHeader('Content-Type', 'application/pdf');
+            //res.setHeader('Content-Disposition', 'attachment; filename=page.pdf');
+            res.send(data);
+            console.log(data);
+            await page.close();
+        } catch {
+            await page.close();
+            res.send("Error!");
+        }
     }
 };
