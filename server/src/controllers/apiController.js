@@ -196,5 +196,8 @@ module.exports = {
     },
     async hosPayrollReconHandler(req, res, next){
         await apiHelper.hosPayrollRecon(req, res);
+    },
+    async getAssetInformation(req, res, next){
+        await apiHelper.getAssetInformation(req, res);
     }
 };

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "set NODE_ENV=test&& jasmine",
     "start": "nodemon server/server.js",
-    "launch": "nodemon server/server.js"
+    "launch": "electron ."
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "dotenv": "^8.2.0",
     "download": "^7.1.0",
     "ejs": "^3.0.1",
+    "electron": "^7.1.10",
     "express": "^4.17.1",
     "firebase-admin": "^8.6.1",
     "nodemon": "^1.19.4",

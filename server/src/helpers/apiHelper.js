@@ -6,12 +6,21 @@ const puppeteer = require("puppeteer");
 const AdmZip = require('adm-zip');
 const download = require("download");
 const papa = require("papaparse");
+const database = require("../helpers/databaseHelper");
 
 // console.log(papa.parse(`${path.resolve(__dirname, "./1.csv")}`))
-
+//
 // const file = fs.createReadStream(`${path.resolve(__dirname, "./1.csv")}`);
-
-
+// var count = 0; // cache the running count
+// papa.parse(file, {
+//     worker: true, // Don't bog down the main thread if its a big file
+//     step: function(result) {
+//         console.log(result);
+//     },
+//     complete: function(results, file) {
+//         console.log('parsing complete read', count, 'records.');
+//     }
+// });
 
 const PDFParser = require("pdf2json");
 let pdfParser = new PDFParser();
@@ -219,5 +228,11 @@ module.exports = {
     },
     async hosPayrollRecon(req, res){
 
+    },
+    async getAssetInformation(req, res){
+        let targetRef = "assetInformation";
+        let assetList = await database.getData(targetRef);
+
+        res.send({"assets": assetList});
     }
 };
