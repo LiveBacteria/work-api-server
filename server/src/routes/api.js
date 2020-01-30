@@ -21,7 +21,18 @@ router.post("/api/equipment_automation", cors(), apiController.equipmentAutomati
 
 router.get("/api/download/:vehicleId", apiController.download);
 
-router.get("/api/testRoute/:unitId", apiController.getDataTest);
+router.get("/api/testRoute", apiController.getDataTest);
+
+router.post("/api/testPost", (req, res) => {
+    let credentials = {
+      username: req.body.username,
+      password: req.body.password
+    };
+    console.log(credentials.username);
+    console.log(credentials.password);
+    // credentials.username != "" && credentials.password != "" ? res.send({auth: "Authorised"}): res.send({auth: "Failed"});
+    res.render("user/userLanding", credentials);
+});
 
 router.get("/api/*", apiController.index);
 

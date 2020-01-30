@@ -1,0 +1,46 @@
+<div class="main">
+    <script>
+        document.querySelector("#launch_app").addEventListener("click", formSubmit);
+        function formSubmit(){
+            let username = document.querySelector("#user").value;
+            let pass = document.querySelector("#pass").value;
+
+            fetch("http://127.0.0.1:3000/api/testPost", {method: "POST", redirect: "follow", body: JSON.stringify({"username": username, "password": pass})}).then((data) => {
+                return data.json();
+            }).then((data) => {
+                showAuthorisation(data.auth);
+            });
+        }
+
+        function showAuthorisation(auth){
+            if(!document.querySelector("#authStatus")){
+                let p = document.createElement("p");
+                p.id = "authStatus"
+                p.innerText = auth+"";
+                document.querySelector(".main").appendChild(p);
+            }else{
+                document.querySelector("#authStatus").innerText = auth+"";
+            }
+            try{
+                setTimeout(() => {document.querySelector("#authStatus").remove();}, 2500)
+            }catch{
+                console.log(err);
+            }
+        }
+    </script>
+    <style>
+        .main {
+            transition: all .25s linear;
+            margin: auto;
+            max-width: 100%;
+            border: solid red 5px;
+        }
+
+        .main:hover {
+            border: solid grey 5px;
+        }
+    </style>
+    <button id="launch_app">Click Me</button>
+    <input type="text" id="user" value="Username">
+    <input type="password" id="pass" value="Password">
+</div>
