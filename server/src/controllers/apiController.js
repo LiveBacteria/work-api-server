@@ -194,6 +194,9 @@ module.exports = {
     async groupedPayrollReports(req, res, next){
 
     },
+    async getDVIRData(req, res){
+
+    },
     async hosPayrollReconHandler(req, res, next){
         await apiHelper.hosPayrollRecon(req, res);
     },
