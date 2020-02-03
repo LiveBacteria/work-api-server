@@ -19,7 +19,8 @@ module.exports = {
         return result;
     },
     async updateData(ref, data){
-
+        let targetRef = db.ref(ref);
+        await targetRef.set(data);
     },
     async createData(ref, data){
 
@@ -29,4 +30,4 @@ module.exports = {
 
         }
     }
-}
+};

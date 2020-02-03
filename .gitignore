@@ -1,11 +1,13 @@
 node_modules
 
-config/*.json
+server/src/config/*.json
 
-output/**/*.pdf
+server/output/**/*.pdf
 
-output/**/*.html
+server/output/**/*.html
 
-output/**/*.zip
+server/output/**/*.zip
 
 .env
+
+.idea/

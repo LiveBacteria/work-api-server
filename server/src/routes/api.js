@@ -23,6 +23,8 @@ router.get("/api/download/:vehicleId", apiController.download);
 
 router.get("/api/testRoute", apiController.getDataTest);
 
+router.get("/api/equipment-check-automation", apiController.equipmentCheckAutomation);
+
 router.post("/api/testPost", (req, res) => {
     console.log(req.body)
     let credentials = {
