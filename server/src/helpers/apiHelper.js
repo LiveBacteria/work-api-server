@@ -6,12 +6,22 @@ const puppeteer = require("puppeteer");
 const AdmZip = require('adm-zip');
 const download = require("download");
 const papa = require("papaparse");
+const database = require("../helpers/databaseHelper");
+const assetHelper = require("../helpers/assetHelpers");
 
 // console.log(papa.parse(`${path.resolve(__dirname, "./1.csv")}`))
-
+//
 // const file = fs.createReadStream(`${path.resolve(__dirname, "./1.csv")}`);
-
-
+// var count = 0; // cache the running count
+// papa.parse(file, {
+//     worker: true, // Don't bog down the main thread if its a big file
+//     step: function(result) {
+//         console.log(result);
+//     },
+//     complete: function(results, file) {
+//         console.log('parsing complete read', count, 'records.');
+//     }
+// });
 
 const PDFParser = require("pdf2json");
 let pdfParser = new PDFParser();
@@ -219,5 +229,140 @@ module.exports = {
     },
     async hosPayrollRecon(req, res){
 
+    },
+    async getAssetInformation(req, res){
+        let targetRef = "assetInformation";
+        let assetList = await database.getData(targetRef);
+
+        res.send({"assets": assetList});
+    },
+    async updateAssetDVIR(){
+        let targetRef = "assetInformation";
+        let equipmentList = await database.getData(targetRef);
+        equipmentList = equipmentList.val();
+
+        let permArray = [];
+
+        // Convert Object of Objects to Array of Objects
+        equipmentList = Object.keys(equipmentList).map(function(key) {
+            return equipmentList[key];
+        });
+
+        // Sorts the asset list by unit number converted to string lexically
+        equipmentList = assetHelper.sortData(equipmentList);
+
+        // Login Credentials in the case that the app is run outside of the business intranet
+        const credential  = {
+            user: "pooret1",
+            password: "Kotegawayui11!!"
+        };
+
+        let compiledDVIRArray = [];
+
+        equipmentList.map(index => console.log(index.unit))
+
+        for(let i = 0; i < equipmentList.length; i++){
+            // Need to see if this can be written to use the below to save on memory!
+            // Declare globally scoped puppeteer browser for the for loop
+            const browser = await puppeteer.launch({headless: true});
+
+
+            const url = "http://winweb.cleanharbors.com/Vehicle/VehicleTDSearch.aspx?SearchType=DVIR";
+            const page = await browser.newPage();
+            await page.goto(url, {waitUntil: 'networkidle2', timeout: 5000});
+
+            if(await page.evaluate(() => {return document.body.innerHTML.toString().includes("Web Login")})){ //Checks to see if login is required, and if so completes a login
+                await page.type("#txtUserName", credential.user);
+                await page.type("#txtPassword", credential.password);
+                await page.click("#btnLogin");
+                await page.waitForSelector('#ddlCorretcedDVIR', {
+                    visible: true,
+                });
+            }
+
+            console.log("Reached page.type txtVhcleNo");
+            console.log(typeof equipmentList[i].unit);
+            await page.type("#txtVhcleNo", equipmentList[i].unit+""); // sets the unit number to be equal to the current unit
+
+            await page.evaluate(() => {
+                $('#ddlCorretcedDVIR').attr('disabled', false);
+                $("#ddlCorretcedDVIR").attr('selectedIndex', 0);
+                document.querySelector("#ddlCondition").selectedIndex = 2; // selects `Requires Maintenance`
+
+                // This absolutely must be changed to read from each DVIR and see if they are different from what is stored in the database!!!
+                document.querySelector("#txtStartDate").value = "01/01/2020"; // sets the start date of the search to "01/01/2020" THIS WILL BE CHANGED!!!
+                // This absolutely must be changed to read from each DVIR and see if they are different from what is stored in the database!!!
+
+            });
+
+            await page.click("#btnRetrieve"); // starts the search which reloads the page
+
+            try {
+                await page.waitForSelector('#LabelDVIRsearchResultCount', {
+                    visible: true,
+                });
+
+                let skip = await page.evaluate(() => {
+                    return document.body.innerHTML.toString().includes("No data found for the specified criteria.");
+                });
+
+                if(skip){ // Checks to see if dvir items exist or not
+                    console.log("Skipped!");
+                    await browser.close();
+                    continue;
+                }
+
+                await page.waitForSelector('#gridViewDVIRsearch > tbody .Row0', {
+                    visible: true,
+                });
+                try{
+                    await page.waitForSelector('#gridViewDVIRsearch > tbody .Row1', {
+                        visible: true,
+                    });
+                }catch(err){console.error(err);}
+
+                // This is where we will rip the data from!! This is the finished page where the dvirs are.
+                let data = await page.evaluate(() => {
+                    let tempDVIRArray = [];
+                    let target = $("#gridViewDVIRsearch > tbody > tr");
+                    for(let index = 1; index < target.length; index++){
+                        let tempObj = {
+                            "logId": target[index].querySelectorAll("td")[1].innerText,
+                            "inspectionDate": target[index].querySelectorAll("td")[2].innerText,
+                            "unit": target[index].querySelectorAll("td")[3].innerText,
+                            "isNeedsRepair": true,
+                            "branch": target[index].querySelectorAll("td")[6].innerText,
+                            "createByEmployeeID": target[index].querySelectorAll("td")[7].innerText,
+                            "createByEmployeeName": target[index].querySelectorAll("td")[8].innerText,
+                            "vehicleOdometer": target[index].querySelectorAll("td")[9].innerText,
+                            "comment": target[index].querySelectorAll("td")[11].innerText,
+                            "tripType": target[index].querySelectorAll("td")[12].innerText,
+                            "atTimeOfLastCheck_DefectsCorrected": target[index].querySelectorAll("td")[13].innerText,
+                            "createdBy": target[index].querySelectorAll("td")[18].innerText,
+                            "dateCreated": target[index].querySelectorAll("td")[19].innerText,
+                            "modifiedBy": target[index].querySelectorAll("td")[20].innerText,
+                            "modifiedDate": target[index].querySelectorAll("td")[21].innerText,
+                        };
+                        tempDVIRArray.push(tempObj);
+                    }
+                    return tempDVIRArray;
+                });
+
+                // Adds the relevant unit number to the beginning of the dvir array as a means of easier identifying later
+                data.unshift(equipmentList[i].unit);
+                compiledDVIRArray.push(data);
+                console.log(compiledDVIRArray);
+                database.updateData("/dvirs/", compiledDVIRArray);
+                await browser.close();
+                // This is where we will rip the data from!! This is the finished page where the dvirs are.
+
+            } catch(err) {
+                await browser.close();
+                // console.error("Error");
+                // try{console.error(err);}catch{};
+            }
+        }
+        return compiledDVIRArray;
+        database.updateData("/dvirsCompleted/", compiledDVIRArray);
     }
 };

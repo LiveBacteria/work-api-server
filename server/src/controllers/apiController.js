@@ -141,7 +141,7 @@ module.exports = {
         credential.password = "Kotegawayui11!!";
 
         const browser = await puppeteer.launch({headless: false});
-        const url = "http://winweb.cleanharbors.com/Vehicle/VehicleTDSearch.aspx?SearchType=DVIR"
+        const url = "http://winweb.cleanharbors.com/Vehicle/VehicleTDSearch.aspx?SearchType=DVIR";
         const page = await browser.newPage();
         await page.goto(url, {waitUntil: 'networkidle0', timeout: 0});
 
@@ -194,7 +194,22 @@ module.exports = {
     async groupedPayrollReports(req, res, next){
 
     },
+    async getDVIRData(req, res){
+
+    },
+    async equipmentCheckAutomation(req, res, next){
+        let dvirArray = await apiHelper.updateAssetDVIR();
+
+        dvirArray.map((index) => {
+           console.log(dvirArray[index][0]);
+        });
+
+    },
     async hosPayrollReconHandler(req, res, next){
         await apiHelper.hosPayrollRecon(req, res);
+    },
+    async getAssetInformation(req, res, next){
+        let data = await apiHelper.getAssetInformation(req, res);
+        res.send(data);
     }
 };

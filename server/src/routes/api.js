@@ -23,15 +23,25 @@ router.get("/api/download/:vehicleId", apiController.download);
 
 router.get("/api/testRoute", apiController.getDataTest);
 
+router.get("/api/equipment-check-automation", apiController.equipmentCheckAutomation);
+
 router.post("/api/testPost", (req, res) => {
+    console.log(req.body)
     let credentials = {
       username: req.body.username,
       password: req.body.password
     };
     console.log(credentials.username);
     console.log(credentials.password);
-    // credentials.username != "" && credentials.password != "" ? res.send({auth: "Authorised"}): res.send({auth: "Failed"});
+    //credentials.username != "" && credentials.password != "" ? res.send({auth: "Authorised"}): res.send({auth: "Failed"});
     res.render("user/userLanding", credentials);
+
+});
+
+router.post("/api/getAssetInformation", apiController.getAssetInformation);
+
+router.post("/api/redirectTest", (req, res, next) => {
+    res.render("user/userLanding", {username: "T"})
 });
 
 router.get("/api/*", apiController.index);

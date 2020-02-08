@@ -1,5 +1,31 @@
 <div class="main">
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+    </head>
+    <style>
+        * {
+            font-family: 'Open Sans', sans-serif;
+        }
+        .main {
+            text-align: center;
+            transition: all .25s linear;
+            margin: auto;
+            max-width: 100%;
+            border: solid red 5px;
+        }
+
+        .main:hover {
+            border: solid grey 5px;
+        }
+    </style>
+    <button id="launch_app">Click Me</button>
+    <input name="username" type="text" id="user" value="Username">
+    <input name="password" type="password" id="pass" value="Password">
+    <form method="POST" action="/api/testPost">
+        <input type="submit">
+    </form>
     <script>
+        let globalAuth, assets;
         document.querySelector("#launch_app").addEventListener("click", formSubmit);
         function formSubmit(){
             let username = document.querySelector("#user").value;
@@ -9,6 +35,13 @@
                 return data.json();
             }).then((data) => {
                 showAuthorisation(data.auth);
+                globalAuth = data.auth;
+            });
+
+            fetch("http://127.0.0.1:3000/api/getAssetInformation", {method: "POST", body: JSON.stringify({"auth":globalAuth})}).then((data) => {
+                return data.json();
+            }).then((data) => {
+                showAssetList(data);
             });
         }
 
@@ -27,20 +60,30 @@
                 console.log(err);
             }
         }
-    </script>
-    <style>
-        .main {
-            transition: all .25s linear;
-            margin: auto;
-            max-width: 100%;
-            border: solid red 5px;
-        }
 
-        .main:hover {
-            border: solid grey 5px;
+        function showAssetList(assetList){
+            assetList = Object.keys(assetList.assets).map(function(key) {
+                return assetList.assets[key];
+            });
+
+            assets = assetList;
+
+            if(!document.querySelector("#assets")){
+                let list = document.createElement("ul");
+                list.id = "assets"
+                assetList.map((target) => {
+                    console.log(target);
+                   typeof target["ANNUAL_Inspections"] != "undefined" ? list.innerHTML += `<li style="${new Date(target.lastChecked) < new Date(new Date().getTime() - 2 * 86400000) ? "color: red": ""}">${target.unit} - Last Checked: ${new Date(target.lastChecked)}</li>`:"";
+                });
+                document.querySelector(".main").appendChild(list);
+            }else{
+                document.querySelector("#assets").innerText = auth+"";
+            }
+            try{
+                setTimeout(() => {document.querySelector("#assets").remove();}, 10000)
+            }catch{
+                console.log(err);
+            }
         }
-    </style>
-    <button id="launch_app">Click Me</button>
-    <input type="text" id="user" value="Username">
-    <input type="password" id="pass" value="Password">
+    </script>
 </div>
