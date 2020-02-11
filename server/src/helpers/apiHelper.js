@@ -22,16 +22,14 @@ const assetHelper = require("../helpers/assetHelpers");
 //         console.log('parsing complete read', count, 'records.');
 //     }
 // });
-
-const PDFParser = require("pdf2json");
-let pdfParser = new PDFParser();
-
-pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
-pdfParser.on("pdfParser_dataReady", pdfData => {
-    fs.writeFile(`${path.resolve(__dirname, "../../..")}/test.json`, JSON.stringify(pdfData), () => {});
-});
-
-pdfParser.loadPDF(`${path.resolve(__dirname, "../../..")}/report.pdf`);
+// const PDFParser = require("pdf2json");
+// let pdfParser = new PDFParser();
+// pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
+// pdfParser.on("pdfParser_dataReady", pdfData => {
+//     fs.writeFile(`${path.resolve(__dirname, "../../..")}/test.json`, JSON.stringify(pdfData), () => {});
+// });
+//
+// pdfParser.loadPDF(`${path.resolve(__dirname, "../../..")}/report.pdf`);
 
 //To be added in ELD - APR Recon Update
 //const extract = require('pdf-text-extract');
@@ -250,6 +248,7 @@ module.exports = {
 
         // Sorts the asset list by unit number converted to string lexically
         equipmentList = assetHelper.sortData(equipmentList);
+        //equipmentList = equipmentList.splice(0, 1);
 
         // Login Credentials in the case that the app is run outside of the business intranet
         const credential  = {
@@ -259,17 +258,17 @@ module.exports = {
 
         let compiledDVIRArray = [];
 
-        equipmentList.map(index => console.log(index.unit))
+        equipmentList.map(index => console.log(index.unit));
 
         for(let i = 0; i < equipmentList.length; i++){
             // Need to see if this can be written to use the below to save on memory!
             // Declare globally scoped puppeteer browser for the for loop
-            const browser = await puppeteer.launch({headless: true});
+            const browser = await puppeteer.launch({headless: false});
 
 
             const url = "http://winweb.cleanharbors.com/Vehicle/VehicleTDSearch.aspx?SearchType=DVIR";
             const page = await browser.newPage();
-            await page.goto(url, {waitUntil: 'networkidle2', timeout: 5000});
+            await page.goto(url, {waitUntil: 'networkidle0', timeout: 0});
 
             if(await page.evaluate(() => {return document.body.innerHTML.toString().includes("Web Login")})){ //Checks to see if login is required, and if so completes a login
                 await page.type("#txtUserName", credential.user);
@@ -352,7 +351,7 @@ module.exports = {
                 data.unshift(equipmentList[i].unit);
                 compiledDVIRArray.push(data);
                 console.log(compiledDVIRArray);
-                database.updateData("/dvirs/", compiledDVIRArray);
+                database.updateData("/dvirsUpdated/", compiledDVIRArray);
                 await browser.close();
                 // This is where we will rip the data from!! This is the finished page where the dvirs are.
 
@@ -362,7 +361,14 @@ module.exports = {
                 // try{console.error(err);}catch{};
             }
         }
-        return compiledDVIRArray;
-        database.updateData("/dvirsCompleted/", compiledDVIRArray);
+
+        // THIS mAY BREAK IT ALL!
+        let checkInterval = setInterval(async() => {
+            if(checkedArray.length === equipmentList.length){
+                return compiledDVIRArray;
+            }
+        }, 1000);
+
+        database.updateData("/dvirsUpdated/", compiledDVIRArray);
     }
 };

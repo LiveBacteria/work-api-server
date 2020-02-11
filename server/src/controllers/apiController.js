@@ -200,9 +200,9 @@ module.exports = {
     async equipmentCheckAutomation(req, res, next){
         let dvirArray = await apiHelper.updateAssetDVIR();
 
-        dvirArray.map((index) => {
-           console.log(dvirArray[index][0]);
-        });
+        // dvirArray.map((index) => {
+        //    console.log(dvirArray[index][0]);
+        // });
 
     },
     async hosPayrollReconHandler(req, res, next){

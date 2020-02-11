@@ -21,8 +21,9 @@ router.post("/api/equipment_automation", cors(), apiController.equipmentAutomati
 
 router.get("/api/download/:vehicleId", apiController.download);
 
-router.get("/api/testRoute", apiController.getDataTest);
 
+router.get("/api/testRoute", apiController.getDataTest);
+// USE THIS ONE
 router.get("/api/equipment-check-automation", apiController.equipmentCheckAutomation);
 
 router.post("/api/testPost", (req, res) => {

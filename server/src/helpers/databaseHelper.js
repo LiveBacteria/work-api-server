@@ -13,10 +13,9 @@ const db = admin.database();
 module.exports = {
     async getData(ref){
         let targetRef = db.ref(ref);
-        let result = await targetRef.once("value", function(snapshot) {
+        return await targetRef.once("value", function (snapshot) {
             return snapshot.val();
         });
-        return result;
     },
     async updateData(ref, data){
         let targetRef = db.ref(ref);
